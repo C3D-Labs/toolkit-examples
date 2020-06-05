@@ -1,14 +1,15 @@
 //
-// Created by redcat1 on 04.06.2020.
+// Created by redcat1
 //
 
 #ifndef PARAM_GEOM_NODE_H
 #define PARAM_GEOM_NODE_H
 
-#include <gce_types.h>
+#include <templ_sptr.h>
 #include <mb_cart_point.h>
 #include <cur_line_segment.h>
 #include <cur_arc.h>
+#include <gce_types.h>
 
 class MbPlaneInstance;
 
