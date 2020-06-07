@@ -161,6 +161,23 @@ AppConstrNodePtr AppParametricSketch::Parallel(AppGeomNodeCRef line1, AppGeomNod
 }
 
 //----------------------------------------------------------------------------------------
+//
+// ---
+bool AppParametricSketch::Remove(AppConstrNodePtr cNode)
+{
+  auto it = std::find(std::cbegin(cNodes), std::cend(cNodes), cNode);
+  if (it != std::cend(cNodes))
+  {
+    if(cNode->Remove(solver))
+    {
+      cNodes.erase(it);
+      return true;
+    }
+  }
+  return false;
+}
+
+//----------------------------------------------------------------------------------------
 // Solve the sketch
 //---
 GCE_result AppParametricSketch::Evaluate()

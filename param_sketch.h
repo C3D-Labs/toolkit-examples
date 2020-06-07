@@ -59,7 +59,7 @@ public: /* Functions formulating constraints */
   AppConstrNodePtr ConnectSegments(AppGeomNodeCRef, AppGeomNodeCRef);
   AppConstrNodePtr Perpendicular(AppGeomNodeCRef, AppGeomNodeCRef);
   AppConstrNodePtr Parallel(AppGeomNodeCRef, AppGeomNodeCRef);
-  bool             Remove(AppConstrNodePtr) = delete;
+  bool             Remove(AppConstrNodePtr);
 
 public:
   GCE_result       Evaluate(); // Solve the sketch
