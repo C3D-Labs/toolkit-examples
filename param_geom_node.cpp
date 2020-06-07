@@ -63,6 +63,15 @@ bool AppGeomNode::Remove(GCE_system system)
 //----------------------------------------------------------------------------------------
 //
 // ---
+AppPointNode AppGeomNode::GetControlPoint(GCE_system solver, point_type pType)
+{
+  const auto pntItem = GCE_PointOf(solver, GceItem(), pType);
+  return AppPointNode(pntItem);
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
 AppPointNode::AppPointNode(geom_item g)
   : AppGeomNode(), mdlrPnt()
   , slvrPnt(g)
@@ -81,7 +90,10 @@ geom_item AppPointNode::GceItem() const
 // ---
 geom_item AppPointNode::Formulate(GCE_system solver)
 {
-  slvrPnt = GCE_AddPoint(solver, _GPnt(mdlrPnt));
+  if (slvrPnt == GCE_NULL_G)
+  {
+    slvrPnt = GCE_AddPoint(solver, _GPnt(mdlrPnt));
+  }
   return slvrPnt;
 }
 

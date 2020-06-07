@@ -12,6 +12,7 @@
 #include <gce_types.h>
 
 class MbPlaneInstance;
+class AppPointNode;
 
 //----------------------------------------------------------------------------------------
 // This node represents some geometric object in constraint system
@@ -23,13 +24,15 @@ protected:
   virtual ~AppGeomNode() = default;
 
 public:
-          bool      AddToInstance(SPtr<MbPlaneInstance>);
-          bool      DeleteFromInstance(SPtr<MbPlaneInstance>);
-  virtual geom_item Formulate(GCE_system) = 0;      // This function formulates node's individual behavior in the solver
-  virtual void      ApplySolution(GCE_system) = 0;  // This function take a computed coordinates from the solver
-          bool      Remove(GCE_system);
+          bool         AddToInstance(SPtr<MbPlaneInstance>);
+          bool         DeleteFromInstance(SPtr<MbPlaneInstance>);
+  virtual geom_item    Formulate(GCE_system) = 0;      // This function formulates node's individual behavior in the solver
+  virtual void         ApplySolution(GCE_system) = 0;  // This function take a computed coordinates from the solver
+          bool         Remove(GCE_system);
+
+          AppPointNode GetControlPoint(GCE_system, point_type);
   // Descriptor of geometrical object registered in the solver.
-  virtual geom_item GceItem() const = 0;
+  virtual geom_item    GceItem() const = 0;
 
 protected:
   // Geometric representation of geometrical object registered in the solver.
@@ -51,16 +54,15 @@ class AppPointNode final : public AppGeomNode
 
 public:
   explicit AppPointNode(geom_item g);
+  AppPointNode(const AppPointNode &) = default;
   ~AppPointNode() override = default;
+  AppPointNode & operator = (const AppPointNode &) = default;
 
 public:
   geom_item GceItem() const override;
   geom_item Formulate(GCE_system solver) override;
   // Apply a state of evaluated geometry from the solver to the model object
   void      ApplySolution(GCE_system solver) override;
-
-  AppPointNode(const AppPointNode &) = delete;
-  AppPointNode & operator = (const AppPointNode &) = delete;
 
 protected:
   SPtr<MbPlaneItem> PlaneItem() override { return SPtr<MbPlaneItem>(nullptr); }

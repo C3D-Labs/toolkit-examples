@@ -38,16 +38,17 @@ public:
   ~AppParametricSketch();
 
 public:
-  SPtr<MbItem>     SketchItem() const { return sketch; }
+  SPtr<MbItem>     SketchItem() const;
 
   AppGeomNodePtr   AddLineSegment(MbLineSegment &);
   AppGeomNodePtr   AddCircle(MbArc &);
+  AppGeomNodePtr   GetControlPoint(AppGeomNodePtr, point_type);
   bool             Remove(AppGeomNodePtr);
 
 public: /* Functions formulating constraints */
-  AppConstrNodePtr FixLength(std::string name, AppGeomNodePtr);  // Distance between the ends of line segment
-  AppConstrNodePtr FixRadius(std::string name, AppGeomNodePtr circle);  // Radial dimension for arc or circle
-  AppConstrNodePtr Distance(AppGeomNodePtr, AppGeomNodePtr, double dimVal );  // Distance dimension for a pair of geometric objects
+  AppConstrNodePtr FixLength(AppGeomNodePtr);  // Distance between the ends of line segment
+  AppConstrNodePtr FixRadius(AppGeomNodePtr circle);  // Radial dimension for arc or circle
+  AppConstrNodePtr Distance(AppGeomNodePtr, AppGeomNodePtr, double dimVal);  // Distance dimension for a pair of geometric objects
   AppConstrNodePtr ConnectSegments(AppGeomNodePtr, AppGeomNodePtr);
   AppConstrNodePtr Perpendicular(AppGeomNodePtr, AppGeomNodePtr);
   AppConstrNodePtr Parallel(AppGeomNodePtr, AppGeomNodePtr);

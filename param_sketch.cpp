@@ -43,6 +43,26 @@ AppGeomNodePtr AppParametricSketch::AddCircle(MbArc & circle)
 
 //----------------------------------------------------------------------------------------
 //
+// ---
+AppGeomNodePtr AppParametricSketch::GetControlPoint(AppGeomNodePtr gNode, point_type pType)
+{
+  if (gNode != nullptr)
+  {
+    return std::make_shared<AppPointNode>(gNode->GetControlPoint(solver, pType));
+  }
+  return nullptr;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+SPtr<MbItem> AppParametricSketch::SketchItem() const
+{
+  return sketch;
+}
+
+//----------------------------------------------------------------------------------------
+//
 //---
 AppGeomNodePtr AppParametricSketch::AddLineSegment(MbLineSegment & lSeg)
 {
@@ -75,7 +95,7 @@ bool AppParametricSketch::Remove(AppGeomNodePtr gNode)
 //----------------------------------------------------------------------------------------
 // Fixes distance between the ends of line segment
 //---
-AppConstrNodePtr AppParametricSketch::FixLength(std::string name, AppGeomNodePtr lSeg)
+AppConstrNodePtr AppParametricSketch::FixLength(AppGeomNodePtr lSeg)
 {
   auto conNode = std::make_shared<AppFixLengthNode>(lSeg);
   _Register(conNode);
@@ -85,7 +105,7 @@ AppConstrNodePtr AppParametricSketch::FixLength(std::string name, AppGeomNodePtr
 //----------------------------------------------------------------------------------------
 // Sets a radial dimension for arc or circle
 //---
-AppConstrNodePtr AppParametricSketch::FixRadius(std::string name, AppGeomNodePtr circle)
+AppConstrNodePtr AppParametricSketch::FixRadius(AppGeomNodePtr circle)
 {
   auto conNode = std::make_shared<AppFixRadiusNode>(circle);
   _Register(conNode);
