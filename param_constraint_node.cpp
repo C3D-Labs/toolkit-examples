@@ -77,6 +77,23 @@ geom_item AppFixGeomNode::Formulate(GCE_system solver)
 //----------------------------------------------------------------------------------------
 //
 // ---
+AppAlignNode::AppAlignNode(AppGeomNodeCRef geom, constraint_type cType)
+  : AppConstraintNode()
+  , conType(cType)
+  , geomItem(geom.GceItem())
+{}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+constraint_item AppAlignNode::Formulate(GCE_system solver)
+{
+  return GCE_AddUnaryConstraint(solver, conType, geomItem);
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
 AppDistanceNode::AppDistanceNode(AppGeomNodeCRef geom1, AppGeomNodeCRef geom2, double dVal)
   : AppConstraintNode()
   , gItem1(geom1.GceItem())

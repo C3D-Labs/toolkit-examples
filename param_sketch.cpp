@@ -88,7 +88,7 @@ bool AppParametricSketch::Remove(AppGeomNodePtr gNode)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppConstrNodePtr AppParametricSketch::FixGeom(AppGeomNodeCRef gNode, constraint_type cType)
+AppConstrNodePtr AppParametricSketch::Fix(AppGeomNodeCRef gNode, constraint_type cType)
 {
   std::shared_ptr<AppConstraintNode> conNode = nullptr;
   if(GCE_LENGTH == cType)
@@ -103,6 +103,16 @@ AppConstrNodePtr AppParametricSketch::FixGeom(AppGeomNodeCRef gNode, constraint_
   {
     conNode = std::make_shared<AppFixGeomNode>(gNode);
   }
+  _Register(conNode);
+  return conNode;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+AppConstrNodePtr AppParametricSketch::Align(AppGeomNodeCRef gNode, constraint_type alignType)
+{
+  auto conNode = std::make_shared<AppAlignNode>(gNode, alignType);
   _Register(conNode);
   return conNode;
 }

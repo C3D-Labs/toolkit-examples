@@ -49,10 +49,13 @@ public:
   bool             Remove(AppGeomNodePtr);
 
 public: /* Functions formulating constraints */
-  /* Allow to fix a radius (GCE_RADIUS_DIM) or a length (GCE_LENTH) of geometic
+  /**Allow to fix a radius (GCE_RADIUS_DIM) or a length (GCE_LENTH) of geometic
    * object or to fix whole geometric object (GCE_FIX_GEOM).*/
-  AppConstrNodePtr FixGeom(AppGeomNodeCRef, constraint_type);
-  AppConstrNodePtr Distance(AppGeomNodeCRef, AppGeomNodeCRef, double dimVal);  // Distance dimension for a pair of geometric objects
+  AppConstrNodePtr Fix(AppGeomNodeCRef, constraint_type);
+  /**Align geomtric objects vertically or horizontally*/
+  AppConstrNodePtr Align(AppGeomNodeCRef, constraint_type);
+  /**Distance dimension for a pair of geometric objects.*/
+  AppConstrNodePtr Distance(AppGeomNodeCRef, AppGeomNodeCRef, double dimVal);
   AppConstrNodePtr ConnectSegments(AppGeomNodeCRef, AppGeomNodeCRef);
   AppConstrNodePtr Perpendicular(AppGeomNodeCRef, AppGeomNodeCRef);
   AppConstrNodePtr Parallel(AppGeomNodeCRef, AppGeomNodeCRef);

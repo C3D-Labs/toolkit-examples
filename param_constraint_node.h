@@ -93,6 +93,26 @@ public:
 };
 
 //----------------------------------------------------------------------------------------
+//
+// ---
+class AppAlignNode final : public AppConstraintNode
+{
+  constraint_type conType;
+  geom_item       geomItem;
+
+public:
+  AppAlignNode(AppGeomNodeCRef, constraint_type);
+  ~AppAlignNode() override = default;
+
+public:
+  constraint_item Formulate(GCE_system) override;
+
+public:
+  AppAlignNode(const AppAlignNode &) = delete;
+  AppAlignNode & operator = (const AppAlignNode &) = delete;
+};
+
+//----------------------------------------------------------------------------------------
 // Distance between geometric objects.
 //---
 class AppDistanceNode final : public AppConstraintNode
