@@ -194,4 +194,24 @@ public:
   AppParallelNode & operator = (const AppParallelNode &) = delete;
 };
 
+//----------------------------------------------------------------------------------------
+// Equal radius constraint.
+// ---
+class AppEqualRadiusNode final : public AppConstraintNode
+{
+  geom_item geomItem1;
+  geom_item geomItem2;
+
+public:
+  AppEqualRadiusNode(AppGeomNodeCRef, AppGeomNodeCRef);
+  ~AppEqualRadiusNode() override = default;
+
+public:
+  constraint_item Formulate(GCE_system) override;
+
+public:
+  AppEqualRadiusNode(const AppEqualRadiusNode &) = delete;
+  AppEqualRadiusNode & operator = (const AppEqualRadiusNode &) = delete;
+};
+
 #endif  // PARAM_CONSTRAINT_NODE_H

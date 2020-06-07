@@ -110,6 +110,20 @@ AppConstrNodePtr AppParametricSketch::Fix(AppGeomNodeCRef gNode, constraint_type
 //----------------------------------------------------------------------------------------
 //
 // ---
+AppConstrNodePtr AppParametricSketch::Equality(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2, constraint_type cType)
+{
+  std::shared_ptr<AppConstraintNode> conNode = nullptr;
+  if(GCE_EQUAL_RADIUS == cType)
+  {
+    conNode = std::make_shared<AppEqualRadiusNode>(gNode1, gNode2);
+  }
+  _Register(conNode);
+  return conNode;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
 AppConstrNodePtr AppParametricSketch::Align(AppGeomNodeCRef gNode, constraint_type alignType)
 {
   auto conNode = std::make_shared<AppAlignNode>(gNode, alignType);

@@ -179,3 +179,20 @@ constraint_item AppParallelNode::Formulate(GCE_system solver)
   geom_item lines[2] = { lineItem1, lineItem2 };
   return GCE_AddParallel(solver, lines);
 }
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+AppEqualRadiusNode::AppEqualRadiusNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
+  : AppConstraintNode()
+  , geomItem1(gNode1.GceItem())
+  , geomItem2(gNode2.GceItem())
+{}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+constraint_item AppEqualRadiusNode::Formulate(GCE_system solver)
+{
+  return GCE_AddEqualRadius(solver, geomItem1, geomItem2);
+}

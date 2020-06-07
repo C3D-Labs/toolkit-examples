@@ -54,6 +54,7 @@ public: /* Functions formulating constraints */
   AppConstrNodePtr Fix(AppGeomNodeCRef, constraint_type);
   /**Align geomtric objects vertically or horizontally*/
   AppConstrNodePtr Align(AppGeomNodeCRef, constraint_type);
+  AppConstrNodePtr Equality(AppGeomNodeCRef, AppGeomNodeCRef, constraint_type);
   /**Distance dimension for a pair of geometric objects.*/
   AppConstrNodePtr Distance(AppGeomNodeCRef, AppGeomNodeCRef, double dimVal);
   AppConstrNodePtr ConnectSegments(AppGeomNodeCRef, AppGeomNodeCRef);
