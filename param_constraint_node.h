@@ -74,6 +74,25 @@ public:
 };
 
 //----------------------------------------------------------------------------------------
+// Fix geometric object constraint node.
+//---
+class AppFixGeomNode final : public AppConstraintNode
+{
+  geom_item geomItem;
+
+public:
+  explicit AppFixGeomNode(AppGeomNodeCRef);
+  ~AppFixGeomNode() override = default;
+
+public:
+  constraint_item Formulate(GCE_system) override;
+
+public:
+  AppFixGeomNode(const AppFixGeomNode &) = delete;
+  AppFixGeomNode & operator = (const AppFixGeomNode &) = delete;
+};
+
+//----------------------------------------------------------------------------------------
 // Distance between geometric objects.
 //---
 class AppDistanceNode final : public AppConstraintNode

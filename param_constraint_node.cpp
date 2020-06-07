@@ -31,10 +31,8 @@ bool AppConstraintNode::Remove(GCE_system system)
 // ---
 AppFixLengthNode::AppFixLengthNode(AppGeomNodeCRef gNode)
  : AppConstraintNode()
- , geomItem(GCE_NULL_G)
-{
-  geomItem = gNode.GceItem();
-}
+ , geomItem(gNode.GceItem())
+{}
 
 //----------------------------------------------------------------------------------------
 //
@@ -49,10 +47,8 @@ constraint_item AppFixLengthNode::Formulate(GCE_system system)
 // ---
 AppFixRadiusNode::AppFixRadiusNode(AppGeomNodeCRef gNode)
   : AppConstraintNode()
-  , circleItem(GCE_NULL_G)
-{
-  circleItem = gNode.GceItem();
-}
+  , circleItem(gNode.GceItem())
+{}
 
 //----------------------------------------------------------------------------------------
 //
@@ -65,14 +61,28 @@ constraint_item AppFixRadiusNode::Formulate(GCE_system system)
 //----------------------------------------------------------------------------------------
 //
 // ---
+AppFixGeomNode::AppFixGeomNode(AppGeomNodeCRef gNode)
+  : AppConstraintNode()
+  , geomItem(gNode.GceItem())
+{}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+geom_item AppFixGeomNode::Formulate(GCE_system solver)
+{
+  return GCE_FixGeom(solver, geomItem);
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
 AppDistanceNode::AppDistanceNode(AppGeomNodeCRef geom1, AppGeomNodeCRef geom2, double dVal)
   : AppConstraintNode()
-  , gItem1(GCE_NULL_G)
-  , gItem2(GCE_NULL_G)
+  , gItem1(geom1.GceItem())
+  , gItem2(geom2.GceItem())
   , dimPars()
 {
-  gItem1 = geom1.GceItem();
-  gItem2 = geom2.GceItem();
   dimPars.dPars.dimValue = dVal;
 }
 
@@ -103,12 +113,9 @@ GCE_result AppDistanceNode::ChangeDimension(GCE_system solver, double newDimVal)
 // ---
 AppConnectSegmentsNode::AppConnectSegmentsNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
   : AppConstraintNode()
-  , crvItem1(GCE_NULL_G)
-  , crvItem2(GCE_NULL_G)
-{
-  crvItem1 = gNode1.GceItem();
-  crvItem2 = gNode2.GceItem();
-}
+  , crvItem1(gNode1.GceItem())
+  , crvItem2(gNode1.GceItem())
+{}
 
 //----------------------------------------------------------------------------------------
 //
@@ -125,12 +132,9 @@ constraint_item AppConnectSegmentsNode::Formulate(GCE_system solver)
 // ---
 AppPerpendicularNode::AppPerpendicularNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
   : AppConstraintNode()
-  , lineItem1(GCE_NULL_G)
-  , lineItem2(GCE_NULL_G)
-{
-  lineItem1 = gNode1.GceItem();
-  lineItem2 = gNode2.GceItem();
-}
+  , lineItem1(gNode1.GceItem())
+  , lineItem2(gNode2.GceItem())
+{}
 
 //----------------------------------------------------------------------------------------
 //
@@ -146,12 +150,9 @@ constraint_item AppPerpendicularNode::Formulate(GCE_system solver)
 // ---
 AppParallelNode::AppParallelNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
     : AppConstraintNode()
-    , lineItem1(GCE_NULL_G)
-    , lineItem2(GCE_NULL_G)
-{
-  lineItem1 = gNode1.GceItem();
-  lineItem2 = gNode2.GceItem();
-}
+    , lineItem1(gNode1.GceItem())
+    , lineItem2(gNode2.GceItem())
+{}
 
 //----------------------------------------------------------------------------------------
 //

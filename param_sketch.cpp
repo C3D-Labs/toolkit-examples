@@ -99,6 +99,10 @@ AppConstrNodePtr AppParametricSketch::FixGeom(AppGeomNodeCRef gNode, constraint_
   {
     conNode = std::make_shared<AppFixRadiusNode>(gNode);
   }
+  else if (GCE_FIX_GEOM == cType)
+  {
+    conNode = std::make_shared<AppFixGeomNode>(gNode);
+  }
   _Register(conNode);
   return conNode;
 }
