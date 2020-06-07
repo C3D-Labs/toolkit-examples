@@ -44,13 +44,9 @@ AppGeomNodePtr AppParametricSketch::AddCircle(MbArc & circle)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppGeomNodePtr AppParametricSketch::GetControlPoint(AppGeomNodePtr gNode, point_type pType)
+AppCPointNode AppParametricSketch::GetControlPoint(AppGeomNodeCRef gNode, point_type pType) const
 {
-  if (gNode != nullptr)
-  {
-    return std::make_shared<AppPointNode>(gNode->GetControlPoint(solver, pType));
-  }
-  return nullptr;
+  return gNode.GetControlPoint(solver, pType);
 }
 
 //----------------------------------------------------------------------------------------
@@ -76,38 +72,33 @@ AppGeomNodePtr AppParametricSketch::AddLineSegment(MbLineSegment & lSeg)
 // ---
 bool AppParametricSketch::Remove(AppGeomNodePtr gNode)
 {
-  if (gNode != nullptr)
+  auto eraseIt = std::find(std::cbegin(gNodes), std::cend(gNodes), gNode);
+  if (eraseIt != std::cend(gNodes))
   {
-    auto eraseIt = std::find(std::cbegin(gNodes), std::cend(gNodes), gNode);
-    if (eraseIt != std::cend(gNodes))
+    if (gNode->Remove(solver))
     {
-      if (gNode->Remove(solver))
-      {
-        gNode->DeleteFromInstance(sketch);
-        gNodes.erase(eraseIt);
-        return true;
-      }
+      gNode->DeleteFromInstance(sketch);
+      gNodes.erase(eraseIt);
+      return true;
     }
   }
   return false;
 }
 
 //----------------------------------------------------------------------------------------
-// Fixes distance between the ends of line segment
-//---
-AppConstrNodePtr AppParametricSketch::FixLength(AppGeomNodePtr lSeg)
+//
+// ---
+AppConstrNodePtr AppParametricSketch::FixGeom(AppGeomNodeCRef gNode, constraint_type cType)
 {
-  auto conNode = std::make_shared<AppFixLengthNode>(lSeg);
-  _Register(conNode);
-  return conNode;
-}
-
-//----------------------------------------------------------------------------------------
-// Sets a radial dimension for arc or circle
-//---
-AppConstrNodePtr AppParametricSketch::FixRadius(AppGeomNodePtr circle)
-{
-  auto conNode = std::make_shared<AppFixRadiusNode>(circle);
+  std::shared_ptr<AppConstraintNode> conNode = nullptr;
+  if(GCE_LENGTH == cType)
+  {
+    conNode = std::make_shared<AppFixLengthNode>(gNode);
+  }
+  else if (GCE_RADIUS_DIM == cType)
+  {
+    conNode = std::make_shared<AppFixRadiusNode>(gNode);
+  }
   _Register(conNode);
   return conNode;
 }
@@ -115,7 +106,7 @@ AppConstrNodePtr AppParametricSketch::FixRadius(AppGeomNodePtr circle)
 //----------------------------------------------------------------------------------------
 // Distance between two geometric objects
 //---
-AppConstrNodePtr AppParametricSketch::Distance(AppGeomNodePtr gNode1, AppGeomNodePtr gNode2, double dimVal)
+AppConstrNodePtr AppParametricSketch::Distance(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2, double dimVal)
 {
   auto conNode = std::make_shared<AppDistanceNode>(gNode1, gNode2, dimVal);
   _Register(conNode);
@@ -128,7 +119,7 @@ AppConstrNodePtr AppParametricSketch::Distance(AppGeomNodePtr gNode1, AppGeomNod
   The function connects end of the first curve to begin of the second curve.
 */
 //---
-AppConstrNodePtr AppParametricSketch::ConnectSegments(AppGeomNodePtr bndCrv1, AppGeomNodePtr bndCrv2)
+AppConstrNodePtr AppParametricSketch::ConnectSegments(AppGeomNodeCRef bndCrv1, AppGeomNodeCRef bndCrv2)
 {
   auto conNode = std::make_shared<AppConnectSegmentsNode>(bndCrv1, bndCrv2);
   _Register(conNode);
@@ -138,7 +129,7 @@ AppConstrNodePtr AppParametricSketch::ConnectSegments(AppGeomNodePtr bndCrv1, Ap
 //----------------------------------------------------------------------------------------
 //
 //---
-AppConstrNodePtr AppParametricSketch::Perpendicular(AppGeomNodePtr line1, AppGeomNodePtr line2)
+AppConstrNodePtr AppParametricSketch::Perpendicular(AppGeomNodeCRef line1, AppGeomNodeCRef line2)
 {
   auto conNode = std::make_shared<AppPerpendicularNode>(line1, line2);
   _Register(conNode);
@@ -148,7 +139,7 @@ AppConstrNodePtr AppParametricSketch::Perpendicular(AppGeomNodePtr line1, AppGeo
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppConstrNodePtr AppParametricSketch::Parallel(AppGeomNodePtr line1, AppGeomNodePtr line2)
+AppConstrNodePtr AppParametricSketch::Parallel(AppGeomNodeCRef line1, AppGeomNodeCRef line2)
 {
   auto conNode = std::make_shared<AppParallelNode>(line1, line2);
   _Register(conNode);
@@ -179,13 +170,9 @@ GCE_result AppParametricSketch::Evaluate()
         Call the function Evaluate() to apply the changes.
 */
 //---
-GCE_result AppParametricSketch::ChangeDimension(AppConstrNodePtr dim, double newDimVal)
+GCE_result AppParametricSketch::ChangeDimension(AppConstraintNode & dim, double newDimVal)
 {
-  if (dim != nullptr)
-  {
-    return dim->ChangeDimension(solver, newDimVal);
-  }
-  return GCE_RESULT_NullSystem;
+  return dim.ChangeDimension(solver, newDimVal);
 }
 
 //----------------------------------------------------------------------------------------
@@ -207,10 +194,14 @@ geom_item AppParametricSketch::_Register(AppGeomNodePtr gNode)
 // ---
 constraint_item AppParametricSketch::_Register(AppConstrNodePtr conNode)
 {
-  const constraint_item conId = conNode->Formulate(solver);
-  if (conId != GCE_NULL_C)
+  constraint_item conId = GCE_NULL_C;
+  if (conNode != nullptr)
   {
-    cNodes.emplace_back(conNode);
+    const constraint_item conId = conNode->Formulate(solver);
+    if (conId != GCE_NULL_C)
+    {
+      cNodes.emplace_back(conNode);
+    }
   }
   return conId;
 }

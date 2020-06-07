@@ -12,7 +12,7 @@
 #include <gce_types.h>
 
 class MbPlaneInstance;
-class AppPointNode;
+class AppCPointNode;
 
 //----------------------------------------------------------------------------------------
 // This node represents some geometric object in constraint system
@@ -24,15 +24,15 @@ protected:
   virtual ~AppGeomNode() = default;
 
 public:
-          bool         AddToInstance(SPtr<MbPlaneInstance>);
-          bool         DeleteFromInstance(SPtr<MbPlaneInstance>);
-  virtual geom_item    Formulate(GCE_system) = 0;      // This function formulates node's individual behavior in the solver
-  virtual void         ApplySolution(GCE_system) = 0;  // This function take a computed coordinates from the solver
-          bool         Remove(GCE_system);
+          bool          AddToInstance(SPtr<MbPlaneInstance>);
+          bool          DeleteFromInstance(SPtr<MbPlaneInstance>);
+  virtual geom_item     Formulate(GCE_system) = 0;      // This function formulates node's individual behavior in the solver
+  virtual void          ApplySolution(GCE_system) = 0;  // This function take a computed coordinates from the solver
+          bool          Remove(GCE_system);
 
-          AppPointNode GetControlPoint(GCE_system, point_type);
+          AppCPointNode GetControlPoint(GCE_system, point_type) const;
   // Descriptor of geometrical object registered in the solver.
-  virtual geom_item    GceItem() const = 0;
+  virtual geom_item     GceItem() const = 0;
 
 protected:
   // Geometric representation of geometrical object registered in the solver.
@@ -47,16 +47,16 @@ protected:
   end of arc, end of lineseg and so on.
 */
 //---
-class AppPointNode final : public AppGeomNode
+class AppCPointNode final : public AppGeomNode
 {
   MbCartPoint mdlrPnt;
   geom_item   slvrPnt; // Descriptor of a control point
 
 public:
-  explicit AppPointNode(geom_item g);
-  AppPointNode(const AppPointNode &) = default;
-  ~AppPointNode() override = default;
-  AppPointNode & operator = (const AppPointNode &) = default;
+  explicit AppCPointNode(geom_item g);
+  AppCPointNode(const AppCPointNode &) = default;
+  ~AppCPointNode() override = default;
+  AppCPointNode & operator = (const AppCPointNode &) = default;
 
 public:
   geom_item GceItem() const override;

@@ -29,14 +29,11 @@ bool AppConstraintNode::Remove(GCE_system system)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppFixLengthNode::AppFixLengthNode(AppGeomNodePtr gNode)
+AppFixLengthNode::AppFixLengthNode(AppGeomNodeCRef gNode)
  : AppConstraintNode()
  , geomItem(GCE_NULL_G)
 {
-  if (gNode != nullptr)
-  {
-    geomItem = gNode->GceItem();
-  }
+  geomItem = gNode.GceItem();
 }
 
 //----------------------------------------------------------------------------------------
@@ -50,14 +47,11 @@ constraint_item AppFixLengthNode::Formulate(GCE_system system)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppFixRadiusNode::AppFixRadiusNode(AppGeomNodePtr gNode)
-    : AppConstraintNode()
-    , circleItem(GCE_NULL_G)
+AppFixRadiusNode::AppFixRadiusNode(AppGeomNodeCRef gNode)
+  : AppConstraintNode()
+  , circleItem(GCE_NULL_G)
 {
-  if (gNode != nullptr)
-  {
-    circleItem = gNode->GceItem();
-  }
+  circleItem = gNode.GceItem();
 }
 
 //----------------------------------------------------------------------------------------
@@ -71,18 +65,15 @@ constraint_item AppFixRadiusNode::Formulate(GCE_system system)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppDistanceNode::AppDistanceNode(AppGeomNodePtr geom1, AppGeomNodePtr geom2, double dVal)
+AppDistanceNode::AppDistanceNode(AppGeomNodeCRef geom1, AppGeomNodeCRef geom2, double dVal)
   : AppConstraintNode()
   , gItem1(GCE_NULL_G)
   , gItem2(GCE_NULL_G)
   , dimPars()
 {
-  if (geom1 != nullptr && geom2 != nullptr)
-  {
-    gItem1 = geom1->GceItem();
-    gItem2 = geom2->GceItem();
-    dimPars.dPars.dimValue = dVal;
-  }
+  gItem1 = geom1.GceItem();
+  gItem2 = geom2.GceItem();
+  dimPars.dPars.dimValue = dVal;
 }
 
 //----------------------------------------------------------------------------------------
@@ -110,16 +101,13 @@ GCE_result AppDistanceNode::ChangeDimension(GCE_system solver, double newDimVal)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppConnectSegmentsNode::AppConnectSegmentsNode(AppGeomNodePtr gNode1, AppGeomNodePtr gNode2)
+AppConnectSegmentsNode::AppConnectSegmentsNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
   : AppConstraintNode()
   , crvItem1(GCE_NULL_G)
   , crvItem2(GCE_NULL_G)
 {
-  if (gNode1 != nullptr && gNode2 != nullptr)
-  {
-    crvItem1 = gNode1->GceItem();
-    crvItem2 = gNode2->GceItem();
-  }
+  crvItem1 = gNode1.GceItem();
+  crvItem2 = gNode2.GceItem();
 }
 
 //----------------------------------------------------------------------------------------
@@ -135,16 +123,13 @@ constraint_item AppConnectSegmentsNode::Formulate(GCE_system solver)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppPerpendicularNode::AppPerpendicularNode(AppGeomNodePtr gNode1, AppGeomNodePtr gNode2)
+AppPerpendicularNode::AppPerpendicularNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
   : AppConstraintNode()
   , lineItem1(GCE_NULL_G)
   , lineItem2(GCE_NULL_G)
 {
-  if (gNode1 != nullptr && gNode2 != nullptr)
-  {
-    lineItem1 = gNode1->GceItem();
-    lineItem2 = gNode2->GceItem();
-  }
+  lineItem1 = gNode1.GceItem();
+  lineItem2 = gNode2.GceItem();
 }
 
 //----------------------------------------------------------------------------------------
@@ -159,16 +144,13 @@ constraint_item AppPerpendicularNode::Formulate(GCE_system solver)
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppParallelNode::AppParallelNode(AppGeomNodePtr gNode1, AppGeomNodePtr gNode2)
+AppParallelNode::AppParallelNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
     : AppConstraintNode()
     , lineItem1(GCE_NULL_G)
     , lineItem2(GCE_NULL_G)
 {
-  if (gNode1 != nullptr && gNode2 != nullptr)
-  {
-    lineItem1 = gNode1->GceItem();
-    lineItem2 = gNode2->GceItem();
-  }
+  lineItem1 = gNode1.GceItem();
+  lineItem2 = gNode2.GceItem();
 }
 
 //----------------------------------------------------------------------------------------

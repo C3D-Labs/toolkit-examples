@@ -15,7 +15,7 @@ class AppGeomNode;
 class AppConstraintNode
 {
 protected:
-  using AppGeomNodePtr = std::shared_ptr<AppGeomNode>;
+  using AppGeomNodeCRef = const AppGeomNode &;
 
 protected:
   constraint_item conItem;
@@ -43,7 +43,7 @@ class AppFixLengthNode final : public AppConstraintNode
   geom_item geomItem;
 
 public:
-  AppFixLengthNode(AppGeomNodePtr);
+  explicit AppFixLengthNode(AppGeomNodeCRef);
   ~AppFixLengthNode() override = default;
 
 public:
@@ -62,7 +62,7 @@ class AppFixRadiusNode final : public AppConstraintNode
   geom_item circleItem;
 
 public:
-  AppFixRadiusNode(AppGeomNodePtr);
+  explicit AppFixRadiusNode(AppGeomNodeCRef);
   ~AppFixRadiusNode() override = default;
 
 public:
@@ -83,7 +83,7 @@ class AppDistanceNode final : public AppConstraintNode
   GCE_ldim_pars dimPars;
 
 public:
-  AppDistanceNode(AppGeomNodePtr, AppGeomNodePtr, double);
+  AppDistanceNode(AppGeomNodeCRef, AppGeomNodeCRef, double);
   ~AppDistanceNode() override = default;
 
 public:
@@ -104,7 +104,7 @@ class AppConnectSegmentsNode final : public AppConstraintNode
   geom_item     crvItem2;
 
 public:
-  AppConnectSegmentsNode(AppGeomNodePtr, AppGeomNodePtr);
+  AppConnectSegmentsNode(AppGeomNodeCRef, AppGeomNodeCRef);
   ~AppConnectSegmentsNode() override = default;
 
 public:
@@ -124,7 +124,7 @@ class AppPerpendicularNode final : public AppConstraintNode
   geom_item lineItem2;
 
 public:
-  AppPerpendicularNode(AppGeomNodePtr, AppGeomNodePtr);
+  AppPerpendicularNode(AppGeomNodeCRef, AppGeomNodeCRef);
   ~AppPerpendicularNode() override = default;
 
 public:
@@ -144,7 +144,7 @@ class AppParallelNode final : public AppConstraintNode
   geom_item lineItem2;
 
 public:
-  AppParallelNode(AppGeomNodePtr, AppGeomNodePtr);
+  AppParallelNode(AppGeomNodeCRef, AppGeomNodeCRef);
   ~AppParallelNode() override = default;
 
 public:
