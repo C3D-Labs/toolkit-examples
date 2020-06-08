@@ -73,7 +73,7 @@ public:
   ~AppParametricCube() = default;
 
 public:
-  SPtr<const MbInstance> SolidItem() const { return paramCube; }
+  SPtr<MbInstance>       SolidItem() const { return paramCube; }
   bool                   ChangeLengthX(double lenX);
   bool                   ChangeLengthY(double lenY);
   bool                   ChangeLengthZ(double lenZ);

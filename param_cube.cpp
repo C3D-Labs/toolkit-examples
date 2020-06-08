@@ -95,7 +95,7 @@ AppParametricCubePlan::GeomNodePtr
 // ---
 bool AppParametricCubePlan::ChangeLengthX(double lenX)
 {
-  const GCE_result result = sketch->ChangeDimension(*controls["lenX"], lenX);
+  const GCE_result result = sketch->ChangeDimension(*controls["lengthX"], lenX);
   return OK(result) ? GCE_RESULT_Ok == Calculate() : false;
 }
 
@@ -104,7 +104,7 @@ bool AppParametricCubePlan::ChangeLengthX(double lenX)
 // ---
 bool AppParametricCubePlan::ChangeLengthY(double lenY)
 {
-  const GCE_result result = sketch->ChangeDimension(*controls["lenY"], lenY);
+  const GCE_result result = sketch->ChangeDimension(*controls["lengthY"], lenY);
   return OK(result) ? GCE_RESULT_Ok == Calculate() : false;
 }
 
@@ -232,20 +232,22 @@ SPtr<MbSolid> AppParametricCube::_CreateSolidWithHoles(double height, double hol
   auto lsegY = paramPlan->GetSideY();
   auto holes = paramPlan->GetHoles();
   // Creating solid
-  MbSolid * solid = _CreateCube(*lsegX, *lsegY, height);
+  SPtr<MbSolid> solid = _CreateCube(*lsegX, *lsegY, height);
   // Creating holes
   for (auto && hole : holes)
   {
-    MbSolid * cylinder = _CreateCylinder(*hole, holeDepth);
+    SPtr<MbSolid> cylinder = _CreateCylinder(*hole, holeDepth);
     if (cylinder != nullptr)
     {
-      MbSolid * cube = solid;
-      MbSNameMaker names3(ct_BooleanSolid, MbSNameMaker::i_SideNone, 0);
-      ::BooleanSolid(*cube, cm_Copy, *cylinder, cm_Copy, bo_Difference, names3, solid);
+      MbSolid * tmpSolid = nullptr;
+      SPtr<MbSolid> cube = solid;
+      MbSNameMaker names(ct_BooleanSolid, MbSNameMaker::i_SideNone, 0);
+      ::BooleanSolid(*cube, cm_Copy, *cylinder, cm_Copy, bo_Difference, names, tmpSolid);
+      solid = tmpSolid;
     }
   }
 
-  return SPtr<MbSolid>(solid);
+  return solid;
 }
 
 //----------------------------------------------------------------------------------------
@@ -259,7 +261,7 @@ SPtr<MbSolid>
   p.Init(axisX.GetPoint1()); cubePnts.push_back(p);
   p.Init(axisX.GetPoint2()); cubePnts.push_back(p);
   p.Init(axisY.GetPoint1()); cubePnts.push_back(p);
-  p.Init(0., 0., -height);   cubePnts.push_back(p);
+  p.Init(0., 0., height);   cubePnts.push_back(p);
   MbSolid * cube = nullptr;
   MbSNameMaker names(-1, MbSNameMaker::i_SideNone, 0);
   ::ElementarySolid(cubePnts, et_Block, names, cube);
@@ -274,7 +276,7 @@ SPtr<MbSolid> AppParametricCube::_CreateCylinder(const MbArc & xyPlane, double h
   SArray<MbCartPoint3D> cylinderPnts(3, 1);
   auto center = xyPlane.GetCentre();
   cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, 0.));
-  cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, -height));
+  cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, height));
   cylinderPnts.push_back(MbCartPoint3D(center.x + xyPlane.GetRadius(), center.y, 0.));
   MbSolid * cylinder = nullptr;
   MbSNameMaker names(-1, MbSNameMaker::i_SideNone, 0);

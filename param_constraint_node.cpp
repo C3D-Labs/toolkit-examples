@@ -39,7 +39,16 @@ AppFixLengthNode::AppFixLengthNode(AppGeomNodeCRef gNode)
 // ---
 constraint_item AppFixLengthNode::Formulate(GCE_system system)
 {
-  return GCE_FixRadius(system, geomItem);
+  conItem = GCE_FixLength(system, geomItem);
+  return conItem;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+GCE_result AppFixLengthNode::ChangeDimension(GCE_system solver, double newVal)
+{
+  return GCE_ChangeDrivingDimension(solver, conItem, newVal);
 }
 
 //----------------------------------------------------------------------------------------
@@ -55,7 +64,16 @@ AppFixRadiusNode::AppFixRadiusNode(AppGeomNodeCRef gNode)
 // ---
 constraint_item AppFixRadiusNode::Formulate(GCE_system system)
 {
-  return GCE_FixRadius(system, circleItem);
+  conItem = GCE_FixRadius(system, circleItem);
+  return conItem;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+GCE_result AppFixRadiusNode::ChangeDimension(GCE_system solver, double newRad)
+{
+  return GCE_ChangeDrivingDimension(solver, conItem, newRad);
 }
 
 //----------------------------------------------------------------------------------------
@@ -69,9 +87,10 @@ AppFixGeomNode::AppFixGeomNode(AppGeomNodeCRef gNode)
 //----------------------------------------------------------------------------------------
 //
 // ---
-geom_item AppFixGeomNode::Formulate(GCE_system solver)
+constraint_item AppFixGeomNode::Formulate(GCE_system solver)
 {
-  return GCE_FixGeom(solver, geomItem);
+  conItem = GCE_FixGeom(solver, geomItem);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -88,7 +107,8 @@ AppAlignNode::AppAlignNode(AppGeomNodeCRef geom, constraint_type cType)
 // ---
 constraint_item AppAlignNode::Formulate(GCE_system solver)
 {
-  return GCE_AddUnaryConstraint(solver, conType, geomItem);
+  conItem = GCE_AddUnaryConstraint(solver, conType, geomItem);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -109,7 +129,8 @@ AppDistanceNode::AppDistanceNode(AppGeomNodeCRef geom1, AppGeomNodeCRef geom2, d
 constraint_item AppDistanceNode::Formulate(GCE_system solver)
 {
   geom_item g[2] = { gItem1, gItem2 };
-  return GCE_AddDistance(solver, g, dimPars);
+  conItem = GCE_AddDistance(solver, g, dimPars);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -131,7 +152,7 @@ GCE_result AppDistanceNode::ChangeDimension(GCE_system solver, double newDimVal)
 AppConnectSegmentsNode::AppConnectSegmentsNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
   : AppConstraintNode()
   , crvItem1(gNode1.GceItem())
-  , crvItem2(gNode1.GceItem())
+  , crvItem2(gNode2.GceItem())
 {}
 
 //----------------------------------------------------------------------------------------
@@ -141,7 +162,8 @@ constraint_item AppConnectSegmentsNode::Formulate(GCE_system solver)
 {
   geom_item ends[2] = { GCE_PointOf(solver, crvItem1, GCE_SECOND_END),
                         GCE_PointOf(solver, crvItem2, GCE_FIRST_END) };  // end points
-  return GCE_AddCoincidence(solver, ends);
+  conItem = GCE_AddCoincidence(solver, ends);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -159,7 +181,8 @@ AppPerpendicularNode::AppPerpendicularNode(AppGeomNodeCRef gNode1, AppGeomNodeCR
 constraint_item AppPerpendicularNode::Formulate(GCE_system solver)
 {
   geom_item lines[2] = { lineItem1, lineItem2 };
-  return GCE_AddPerpendicular(solver, lines);
+  conItem = GCE_AddPerpendicular(solver, lines);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -177,7 +200,8 @@ AppParallelNode::AppParallelNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef gNode2)
 constraint_item AppParallelNode::Formulate(GCE_system solver)
 {
   geom_item lines[2] = { lineItem1, lineItem2 };
-  return GCE_AddParallel(solver, lines);
+  conItem = GCE_AddParallel(solver, lines);
+  return conItem;
 }
 
 //----------------------------------------------------------------------------------------
@@ -194,5 +218,6 @@ AppEqualRadiusNode::AppEqualRadiusNode(AppGeomNodeCRef gNode1, AppGeomNodeCRef g
 // ---
 constraint_item AppEqualRadiusNode::Formulate(GCE_system solver)
 {
-  return GCE_AddEqualRadius(solver, geomItem1, geomItem2);
+  conItem = GCE_AddEqualRadius(solver, geomItem1, geomItem2);
+  return conItem;
 }

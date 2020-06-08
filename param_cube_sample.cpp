@@ -7,6 +7,8 @@
 
 #include <mb_placement3d.h>
 #include <system_dependency_utils.h>
+#include <test_variables.h>
+#include <test_manager.h>
 
 //----------------------------------------------------------------------------------------
 //
@@ -14,19 +16,20 @@
 void ShowCube()
 {
   const MbPlacement3D xyPlane;
-  auto paramCube = std::make_shared<AppParametricCube>(xyPlane, 100., 100., 100., 15., 5., 30.);
+  auto paramCube = std::make_shared<AppParametricCube>(xyPlane, 100., 80., 150., 15., 5., 30.);
+  TestVariables::viewManager->AddObject(Style(1, RGB( 0, 0, 200)), paramCube->SolidItem());
   // Show cube
-  SleepCP(2000);
   paramCube->ChangeLengthX(110.);
+  TestVariables::viewManager->RedrawObject(paramCube->SolidItem());
   // Show cube
-  SleepCP(2000);
   paramCube->ChangeLengthY(90.);
+  TestVariables::viewManager->RedrawObject(paramCube->SolidItem());
   // Show cube
-  SleepCP(2000);
-  paramCube->ChangeLengthY(125.);
+  paramCube->ChangeLengthZ(125.);
+  TestVariables::viewManager->RedrawObject(paramCube->SolidItem());
   // Show cube
-  SleepCP(2000);
   paramCube->ChangeHoleRadius(10.);
+  TestVariables::viewManager->RedrawObject(paramCube->SolidItem());
+  TestVariables::viewManager->RefreshModel();
   // Show cube
-  //TestVariables::viewManager->RedrawObject(sketch->SketchItem());
 }

@@ -48,6 +48,7 @@ public:
 
 public:
   constraint_item Formulate(GCE_system) override;
+  GCE_result      ChangeDimension(GCE_system, double) override;
 
 public:
   AppFixLengthNode(const AppFixLengthNode &) = delete;
@@ -67,6 +68,7 @@ public:
 
 public:
   constraint_item Formulate(GCE_system) override;
+  GCE_result      ChangeDimension(GCE_system, double) override;
 
 public:
   AppFixRadiusNode(const AppFixRadiusNode &) = delete;
