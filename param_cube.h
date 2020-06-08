@@ -31,8 +31,10 @@ class AppParametricCubePlan
   PlanControls                         controls;
 
 public:
-  AppParametricCubePlan(const MbPlacement3D & place, double length, double width,
+  AppParametricCubePlan(const MbPlacement3D & place,
+                        double length, double width,
                         double holeRadius, double holeIndent);
+  ~AppParametricCubePlan() = default;
 
 public:
   bool        ChangeLengthX(double lenX);
@@ -59,14 +61,20 @@ class AppParametricCube
   std::shared_ptr<AppParametricCubePlan> paramPlan;
 
 public:
-  AppParametricCube(const MbPlacement3D & place, double length, double width, double height);
+  AppParametricCube(const MbPlacement3D & place,
+                    double length, double width, double height,
+                    double holeRadius, double holeIndent);
+  ~AppParametricCube() = default;
 
 public:
-  // void AddHole();
-  // void AddPocket();
-  void ChangeLengthX(double lenX);
-  void ChangeLengthY(double lenY);
-  void ChangeLengthZ(double lenZ);
+  bool ChangeLengthX(double lenX);
+  bool ChangeLengthY(double lenY);
+  bool ChangeLengthZ(double lenZ);
+  bool ChangeHoleRadius(double rad);
+
+public:
+  AppParametricCube(const AppParametricCube &) = delete;
+  AppParametricCube & operator = (const AppParametricCube &) = delete;
 };
 
 #endif  // PARAM_CUBE_H

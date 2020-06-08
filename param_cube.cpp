@@ -125,11 +125,13 @@ GCE_result AppParametricCubePlan::Calculate()
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppParametricCube::AppParametricCube(const MbPlacement3D & place, double length, double width, double height)
+AppParametricCube::AppParametricCube(const MbPlacement3D & place,
+                                     double length, double width, double height,
+                                     double holeRadius, double holeIndent)
   : cube(nullptr)
   , paramPlan(nullptr)
 {
-  paramPlan = std::make_shared<AppParametricCubePlan>(place, length, width, 5., 1.);
+  paramPlan = std::make_shared<AppParametricCubePlan>(place, length, width, holeRadius, holeIndent);
 
   MbSolid * solid = nullptr;
   MbSNameMaker names1(-1, MbSNameMaker::i_SideNone, 0);
@@ -146,10 +148,41 @@ AppParametricCube::AppParametricCube(const MbPlacement3D & place, double length,
 //----------------------------------------------------------------------------------------
 //
 // ---
-void AppParametricCube::ChangeLengthX(double lenX)
+bool AppParametricCube::ChangeLengthX(double lenX)
 {
-  paramPlan->ChangeLengthX(lenX);
-  // тут запрашиваем новую длину
+  bool res = paramPlan->ChangeLengthX(lenX);
+  // тут перестраиваем кубик по обновлённому эскизу
 
-  // тут перестраиваем кубик
+  return res;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+bool AppParametricCube::ChangeLengthY(double lenY)
+{
+  bool res = paramPlan->ChangeLengthY(lenY);
+  // тут перестраиваем кубик по обновлённому эскизу
+
+  return res;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+bool AppParametricCube::ChangeLengthZ(double lenZ)
+{
+  // тут перестраиваем кубик. обновлять 2D эскиз не нужно
+  return false;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+bool AppParametricCube::ChangeHoleRadius(double rad)
+{
+  bool res = paramPlan->ChangeHoleRadius(rad);
+  // тут перестраиваем кубик по обновлённому эскизу
+
+  return res;
 }
