@@ -8,7 +8,6 @@
 #include <param_sketch.h>
 
 #include <cur_arc.h>
-#include <solid.h>
 #include <action_solid.h>
 
 //----------------------------------------------------------------------------------------
@@ -127,7 +126,7 @@ GCE_result AppParametricCubePlan::Calculate()
 // ---
 AppParametricCube::AppParametricCube(const MbPlacement3D & place,
                                      double length, double width, double height,
-                                     double holeRadius, double holeIndent)
+                                     double holeRadius, double holeIndent, double)
   : cube(nullptr)
   , paramPlan(nullptr)
 {

@@ -9,11 +9,9 @@
 #include <unordered_map>
 #include <templ_sptr.h>
 #include <gce_types.h>
+#include <solid.h>
 
-class MbPlacement3D;
-class MbCartPoint;
 class MbArc;
-class MbSolid;
 class AppGeomNode;
 class AppConstraintNode;
 class AppParametricSketch;
@@ -63,7 +61,7 @@ class AppParametricCube
 public:
   AppParametricCube(const MbPlacement3D & place,
                     double length, double width, double height,
-                    double holeRadius, double holeIndent);
+                    double holeRadius, double holeIndent, double holeDepth);
   ~AppParametricCube() = default;
 
 public:
