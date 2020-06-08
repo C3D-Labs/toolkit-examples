@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <templ_sptr.h>
 #include <gce_types.h>
-#include <solid.h>
+#include <instance.h>
 
 class MbArc;
 class AppGeomNode;
@@ -21,11 +21,16 @@ class AppParametricSketch;
 // ---
 class AppParametricCubePlan
 {
-  using PlanControls = std::unordered_map<std::string, std::shared_ptr<AppConstraintNode>>;
   using GeomNodePtr  = std::shared_ptr<AppGeomNode>;
   using GeomNodeCRef = const AppGeomNode &;
+  using PlanHoles    = std::vector<GeomNodePtr>;
+  using PlanControls = std::unordered_map<std::string, std::shared_ptr<AppConstraintNode>>;
+
 
   std::shared_ptr<AppParametricSketch> sketch;
+  GeomNodePtr                          sideX;
+  GeomNodePtr                          sideY;
+  PlanHoles                            holes;
   PlanControls                         controls;
 
 public:
@@ -38,6 +43,9 @@ public:
   bool        ChangeLengthX(double lenX);
   bool        ChangeLengthY(double lenY);
   bool        ChangeHoleRadius(double rad);
+  SPtr<MbLineSegment>      GetSideX() const;
+  SPtr<MbLineSegment>      GetSideY() const;
+  std::vector<SPtr<MbArc>> GetHoles() const;
 
   GCE_result  Calculate();
 
@@ -55,8 +63,8 @@ public:
 // ---
 class AppParametricCube
 {
-  SPtr<MbSolid>                          cube;
-  std::shared_ptr<AppParametricCubePlan> paramPlan;
+  SPtr<MbInstance>                       paramCube;
+  std::shared_ptr<AppParametricCubePlan> paramPlan;  // It is defined in cube's XY plane
 
 public:
   AppParametricCube(const MbPlacement3D & place,
@@ -65,10 +73,16 @@ public:
   ~AppParametricCube() = default;
 
 public:
-  bool ChangeLengthX(double lenX);
-  bool ChangeLengthY(double lenY);
-  bool ChangeLengthZ(double lenZ);
-  bool ChangeHoleRadius(double rad);
+  SPtr<const MbInstance> SolidItem() const { return paramCube; }
+  bool                   ChangeLengthX(double lenX);
+  bool                   ChangeLengthY(double lenY);
+  bool                   ChangeLengthZ(double lenZ);
+  bool                   ChangeHoleRadius(double rad);
+
+private:
+  SPtr<MbSolid> _CreateSolidWithHoles(double height, double holeDepth) const;
+  SPtr<MbSolid> _CreateCube(const MbLineSegment & axisX, const MbLineSegment & axisY, double height) const;
+  SPtr<MbSolid> _CreateCylinder(const MbArc & xyPlane, double height) const;
 
 public:
   AppParametricCube(const AppParametricCube &) = delete;

@@ -15,10 +15,10 @@ using AppConstrNodePtr = AppParametricSketch::AppConstrNodePtr;
 //
 // ---
 AppParametricSketch::AppParametricSketch(const MbPlacement3D & place)
-    : sketch(new MbPlaneInstance(place))
-    , solver(GCE_CreateSystem())
-    , gNodes()
-    , cNodes()
+  : sketch(new MbPlaneInstance(place))
+  , solver(GCE_CreateSystem())
+  , gNodes()
+  , cNodes()
 {
   GCE_SetJournal(solver, "gce_sample.jrn");
 }
@@ -55,6 +55,23 @@ AppCPointNode AppParametricSketch::GetControlPoint(AppGeomNodeCRef gNode, point_
 SPtr<MbItem> AppParametricSketch::SketchItem() const
 {
   return sketch;
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+double AppParametricSketch::GetCoordValue(AppGeomNodeCRef gNode, coord_type cType) const
+{
+  return GCE_GetCoordValue(solver, gNode.GceItem(), cType);
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+MbCartPoint AppParametricSketch::GetPointValue(AppGeomNodeCRef gNode, point_type pType) const
+{
+  auto cPnt = gNode.GetControlPoint(solver, pType);
+  return cPnt.GetValue();
 }
 
 //----------------------------------------------------------------------------------------

@@ -59,10 +59,11 @@ public:
   AppCPointNode & operator = (const AppCPointNode &) = default;
 
 public:
-  geom_item GceItem() const override;
-  geom_item Formulate(GCE_system solver) override;
+  geom_item   GceItem() const override;
+  geom_item   Formulate(GCE_system solver) override;
   // Apply a state of evaluated geometry from the solver to the model object
-  void      ApplySolution(GCE_system solver) override;
+  void        ApplySolution(GCE_system solver) override;
+  MbCartPoint GetValue() const;
 
 protected:
   SPtr<MbPlaneItem> PlaneItem() override { return SPtr<MbPlaneItem>(nullptr); }

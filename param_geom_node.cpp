@@ -66,7 +66,9 @@ bool AppGeomNode::Remove(GCE_system system)
 AppCPointNode AppGeomNode::GetControlPoint(GCE_system solver, point_type pType) const
 {
   const auto pntItem = GCE_PointOf(solver, GceItem(), pType);
-  return AppCPointNode(pntItem);
+  AppCPointNode cPnt = AppCPointNode(pntItem);
+  cPnt.ApplySolution(solver);
+  return cPnt;
 }
 
 //----------------------------------------------------------------------------------------
@@ -99,6 +101,14 @@ geom_item AppCPointNode::Formulate(GCE_system solver)
 void AppCPointNode::ApplySolution(GCE_system solver)
 {
   mdlrPnt = _CPnt(GCE_GetPointXY(solver, slvrPnt));
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+MbCartPoint AppCPointNode::GetValue() const
+{
+  return mdlrPnt;
 }
 
 //----------------------------------------------------------------------------------------

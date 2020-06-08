@@ -13,6 +13,7 @@ class AppCPointNode;
 class AppConstraintNode;
 class MbPlaneInstance;
 class MbItem;
+class MbCartPoint;
 class MbPlacement3D;
 class MbLineSegment;
 class MbArc;
@@ -42,6 +43,9 @@ public:
 
 public:
   SPtr<MbItem>     SketchItem() const;
+
+  double           GetCoordValue(AppGeomNodeCRef, coord_type) const;
+  MbCartPoint      GetPointValue(AppGeomNodeCRef, point_type) const;
 
   AppGeomNodePtr   AddLineSegment(MbLineSegment &);
   AppGeomNodePtr   AddCircle(MbArc &);
