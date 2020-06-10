@@ -31,6 +31,7 @@ int main(int argc, char** argv)
     QtVision::CreateProcessesCameraControls(view->graphicsEngine()->GetTopEssence(), QtVision::pt_AllProcess);
 
     ExampleWidget example("The parametric cube", view);
+    view->viewport()->GetCamera()->SetViewOrientation(VSN_NAMESPACE::Rear);
 
     auto pLenghtEd = example.spinbox("Length", 80, 0.0, 500.0, 1.0);
     auto pHeightEd = example.spinbox("Height", 150.0, 0.0, 500.0, 1.0);

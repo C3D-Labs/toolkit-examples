@@ -172,6 +172,7 @@ AppParametricCube::AppParametricCube(const MbPlacement3D & place,
   paramPlan = std::make_shared<AppParametricCubePlan>(MbPlacement3D::global, length, width, holeRadius, holeIndent);
   SPtr<MbSolid> solid = _CreateSolidWithHoles(height, holeDepth);
   paramCube = new MbInstance(*solid, place);
+  paramCube->SetColor(120, 0, 0);
 }
 
 //----------------------------------------------------------------------------------------
