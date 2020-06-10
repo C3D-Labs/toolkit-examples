@@ -79,6 +79,7 @@ public:
   bool                   ChangeLengthZ(double lenZ);
   bool                   ChangeHoleRadius(double rad);
 
+  bool                   RebuildSolid(double height, double holeDepth);
 private:
   SPtr<MbSolid> _CreateSolidWithHoles(double height, double holeDepth) const;
   SPtr<MbSolid> _CreateCube(const MbLineSegment & axisX, const MbLineSegment & axisY, double height) const;

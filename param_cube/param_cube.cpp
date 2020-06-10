@@ -223,6 +223,19 @@ bool AppParametricCube::ChangeHoleRadius(double rad)
 }
 
 //----------------------------------------------------------------------------------------
+//
+// ---
+bool AppParametricCube::RebuildSolid(double height, double holeDepth)
+{
+    if (auto solid = _CreateSolidWithHoles(height, holeDepth))
+    {
+        paramCube->ReplaceItem(*paramCube->GetItem(), *solid, true);
+        return true;
+    }
+    return false;
+}
+
+//----------------------------------------------------------------------------------------
 // Код примерный, требует уточнения.
 // ---
 SPtr<MbSolid> AppParametricCube::_CreateSolidWithHoles(double height, double holeDepth) const
