@@ -29,11 +29,11 @@ SET(Examples_OUTPUT "Examples")
 
 # Libraries    
 if( NOT C3D_MATH_DIR )
-  SET(C3D_MATH_DIR   ${CMAKE_SOURCE_DIR}/c3d-libs/Kernel)
+  SET(C3D_MATH_DIR   ${CMAKE_SOURCE_DIR}/c3d-libs/kernel)
 endif()
 
 if( NOT C3D_Vision_DIR )
-  SET(C3D_Vision_DIR ${CMAKE_SOURCE_DIR}/c3d-libs/Vision)
+  SET(C3D_Vision_DIR ${CMAKE_SOURCE_DIR}/c3d-libs/vision)
 endif()
 
 # Libraries    
@@ -89,7 +89,7 @@ INCLUDE_DIRECTORIES(
 
 IF(UNIX)
   ADD_DEFINITIONS(
-      -std=c++11
+      -std=c++14
   )
   SET(STDLIB stdc++)
 ELSE()
