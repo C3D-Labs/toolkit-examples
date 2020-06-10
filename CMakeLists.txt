@@ -107,7 +107,6 @@ endif()
 
 # add platforms
 ADD_SUBDIRECTORY("platforms")
-message("qt- ${QtVision_OUTPUT}")
 
 MACRO(SUBDIRLIST result curdir)
   FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
