@@ -134,10 +134,6 @@ MACRO(MAKE_QT_EXAMPLE dir)
 	LIST(FILTER e_sources EXCLUDE REGEX "sample\.cpp$")
 	LIST(FILTER e_sources EXCLUDE REGEX "mfc_")
 	
-	FOREACH(header ${e_sources})
-	  message(${header})
-	ENDFOREACH()
-	
 	IF(EXISTS "${CMAKE_SOURCE_DIR}/${dir}/resources.qrc")
 		QT5_ADD_RESOURCES(RCC_example ${dir}/resources.qrc)
 	ENDIF()
