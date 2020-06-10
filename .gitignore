@@ -1,0 +1,7 @@
+﻿/build
+/c3d-libs/kernel/Release
+/c3d-libs/kernel/Include
+/c3d-libs/kernel/Debug
+/c3d-libs/vision/Release
+/c3d-libs/vision/Include
+/c3d-libs/vision/Debug
