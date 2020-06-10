@@ -1,2 +1,4 @@
 # toolkit-examples
-Examples show how to use tools of the c3d toolkit. 
+Example shows how to use C3D Solver with C3D Viewer.
+
+ 
