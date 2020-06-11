@@ -10,5 +10,5 @@ Also, there are GUI wrappers to MFC and Qt libraries in the "platforms" director
 
 ## Examples list:  
 * param_cube/  
-The example shows how to make a parametrix cube use C3D Solver component and display with C3D Vision componeny.  
+The example shows how to make a parametric cube use C3D Solver component and display with C3D Vision componeny.  
 ![alt text](param_cube/preview.png?raw=true "example preview")
