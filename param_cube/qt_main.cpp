@@ -37,9 +37,9 @@ int main(int argc, char** argv)
     auto pHeightEd = example.spinbox("Height", 150.0, 0.0, 500.0, 1.0);
     auto pWidthEd  = example.spinbox("Width", 100.0, 0.0, 500.0, 1.0);
 
-    auto pHoleRadiusEd = example.spinbox("holeRadius", 15.0);
+    auto pHoleRadiusEd = example.spinbox("Holes radius", 15.0);
     //auto pHoleIndentEd = example.spinbox("holeIndent", 5.0);
-    auto pHoleDepthEd  = example.spinbox("holeDepth", 30.0, 0.0, 500.0, 1.0);
+    auto pHoleDepthEd  = example.spinbox("Holes depth", 30.0, 0.0, 500.0, 1.0);
 
     const MbPlacement3D xyPlane;
     auto paramCube = std::make_shared<AppParametricCube>(xyPlane, 100., 80., 150., 15., 5., 30.);
