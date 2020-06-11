@@ -130,7 +130,7 @@ MACRO(MAKE_QT_EXAMPLE dir)
 	FILE(GLOB_RECURSE qt_headers "${dir}/qt_*.h")
 	FILE(GLOB_RECURSE e_sources "${dir}/*.cpp")
 	
-	LIST(FILTER e_sources EXCLUDE REGEX "sample\.cpp$")
+	LIST(FILTER e_sources EXCLUDE REGEX "test\.cpp$")
 	LIST(FILTER e_sources EXCLUDE REGEX "mfc_")
 	
 	IF(EXISTS "${CMAKE_SOURCE_DIR}/${dir}/resources.qrc")
