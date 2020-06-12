@@ -13,8 +13,8 @@
 //----------------------------------------------------------------------------------------
 //
 // ---
-AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place, double length, double width,
-                                             double holeRadius, double holeIndent)
+AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place,
+                                             const ParamCubeProps & rect, const ParamHoleProps & hole)
   : sketch(nullptr)
   , sideX(nullptr)
   , sideY(nullptr)
@@ -23,7 +23,7 @@ AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place, double
 {
   // Rectangle sides.
   sketch = std::make_shared<AppParametricSketch>(place);
-  const MbCartPoint vertA(0., 0.), vertB(length, 0.), vertC(length, width), vertD(0., width);
+  const MbCartPoint vertA(0., 0.), vertB(rect.length, 0.), vertC(rect.length, rect.width), vertD(0., rect.width);
   sideX = _AddRectangleSide(vertA, vertB);  // lsegAB
   auto lsegBC = _AddRectangleSide(vertB, vertC);
   auto lsegCD = _AddRectangleSide(vertC, vertD);
@@ -46,20 +46,20 @@ AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place, double
   sketch->Parallel(*sideX, *lsegCD);
 
   // Create holes in each corner.
-  const double centerIndent = holeRadius + holeIndent;
-  SPtr<MbArc> circle(new MbArc(MbCartPoint(centerIndent, centerIndent), holeRadius));
+  const double centerIndent = hole.radius + hole.centerIndent;
+  SPtr<MbArc> circle(new MbArc(MbCartPoint(centerIndent, centerIndent), hole.radius));
   auto holeA = _AddHoleInCorner(*circle, *sideX, *sideY, centerIndent);
   controls["holeR"] = sketch->Fix(*holeA, GCE_RADIUS_DIM);
 
-  circle = new MbArc(MbCartPoint(length - centerIndent, centerIndent), holeRadius);
+  circle = new MbArc(MbCartPoint(rect.length - centerIndent, centerIndent), hole.radius);
   auto holeB = _AddHoleInCorner(*circle, *sideX, *lsegBC, centerIndent);
   sketch->Equality(*holeA, *holeB, GCE_EQUAL_RADIUS);
 
-  circle = new MbArc(MbCartPoint(length - centerIndent, width - centerIndent), holeRadius);
+  circle = new MbArc(MbCartPoint(rect.length - centerIndent, rect.width - centerIndent), hole.radius);
   auto holeC = _AddHoleInCorner(*circle, *lsegBC, *lsegCD, centerIndent);
   sketch->Equality(*holeA, *holeC, GCE_EQUAL_RADIUS);
 
-  circle = new MbArc(MbCartPoint(centerIndent, width - centerIndent), holeRadius);
+  circle = new MbArc(MbCartPoint(centerIndent, rect.width - centerIndent), hole.radius);
   auto holeD = _AddHoleInCorner(*circle, *lsegCD, *sideY, centerIndent);
   sketch->Equality(*holeA, *holeD, GCE_EQUAL_RADIUS);
 
@@ -164,13 +164,14 @@ GCE_result AppParametricCubePlan::Calculate()
 //
 // ---
 AppParametricCube::AppParametricCube(const MbPlacement3D & place,
-                                     double length, double width, double height,
-                                     double holeRadius, double holeIndent, double holeDepth)
+                                     const ParamCubeProps & cube, const ParamHoleProps & hole)
   : paramCube(nullptr)
   , paramPlan(nullptr)
+  , cubeProps(cube)
+  , holeProps(hole)
 {
-  paramPlan = std::make_shared<AppParametricCubePlan>(MbPlacement3D::global, length, width, holeRadius, holeIndent);
-  SPtr<MbSolid> solid = _CreateSolidWithHoles(height, holeDepth);
+  paramPlan = std::make_shared<AppParametricCubePlan>(MbPlacement3D::global, cubeProps, holeProps);
+  SPtr<MbSolid> solid = _CreateSolidWithHoles();
   paramCube = new MbInstance(*solid, place);
   paramCube->SetColor(120, 0, 0);
 }
@@ -180,11 +181,12 @@ AppParametricCube::AppParametricCube(const MbPlacement3D & place,
 // ---
 bool AppParametricCube::ChangeLengthX(double lenX)
 {
-  bool res = paramPlan->ChangeLengthX(lenX);
-  // тут перестраиваем кубик по обновлённому эскизу
-  // должен быть вызван аналог функции _CreateSolidWithHoles
-
-  return res;
+  if (paramPlan->ChangeLengthX(lenX))
+  {
+    cubeProps.length = lenX;
+    return true;
+  }
+  return false;
 }
 
 //----------------------------------------------------------------------------------------
@@ -192,11 +194,12 @@ bool AppParametricCube::ChangeLengthX(double lenX)
 // ---
 bool AppParametricCube::ChangeLengthY(double lenY)
 {
-  bool res = paramPlan->ChangeLengthY(lenY);
-  // тут перестраиваем кубик по обновлённому эскизу
-  // должен быть вызван аналог функции _CreateSolidWithHoles
-
-  return res;
+  if(paramPlan->ChangeLengthY(lenY))
+  {
+    cubeProps.width = lenY;
+    return true;
+  }
+  return false;
 }
 
 //----------------------------------------------------------------------------------------
@@ -204,10 +207,8 @@ bool AppParametricCube::ChangeLengthY(double lenY)
 // ---
 bool AppParametricCube::ChangeLengthZ(double lenZ)
 {
-  // тут перестраиваем кубик без задействования параметризации.
-  // хотя обновлять 2D эскиз не нужно, можно использовать для перестроения ту же функцию,
-  // что и в ChangeLengthX, ChangeLengthY, ChangeHoleRadius
-  return false;
+  cubeProps.height = lenZ;
+  return true;
 }
 
 //----------------------------------------------------------------------------------------
@@ -215,49 +216,53 @@ bool AppParametricCube::ChangeLengthZ(double lenZ)
 // ---
 bool AppParametricCube::ChangeHoleRadius(double rad)
 {
-  bool res = paramPlan->ChangeHoleRadius(rad);
-
-  // тут перестраиваем кубик по обновлённому эскизу
-  // должен быть вызван аналог функции _CreateSolidWithHoles
-
-  return res;
+  if(paramPlan->ChangeHoleRadius(rad))
+  {
+    holeProps.radius = rad;
+    return true;
+  }
+  return false;
 }
 
 //----------------------------------------------------------------------------------------
 //
 // ---
-bool AppParametricCube::RebuildSolid(double height, double holeDepth)
+bool AppParametricCube::RebuildSolid()
 {
-    if (auto solid = _CreateSolidWithHoles(height, holeDepth))
-    {
-        paramCube->ReplaceItem(*paramCube->GetItem(), *solid, true);
-        return true;
-    }
-    return false;
+  auto solid = _CreateSolidWithHoles();
+  if (solid != nullptr)
+  {
+      paramCube->ReplaceItem(*paramCube->GetItem(), *solid, true);
+      return true;
+  }
+  return false;
 }
 
 //----------------------------------------------------------------------------------------
 // Код примерный, требует уточнения.
 // ---
-SPtr<MbSolid> AppParametricCube::_CreateSolidWithHoles(double height, double holeDepth) const
+SPtr<MbSolid> AppParametricCube::_CreateSolidWithHoles() const
 {
-  // Get a rectangle actual state from 2D sketch
+  // Creating solid cube
   auto lsegX = paramPlan->GetSideX();
   auto lsegY = paramPlan->GetSideY();
-  auto holes = paramPlan->GetHoles();
-  // Creating solid
-  SPtr<MbSolid> solid = _CreateCube(*lsegX, *lsegY, height);
-  // Creating holes
-  for (auto && hole : holes)
+  SPtr<MbSolid> solid = _CreateCube(*lsegX, *lsegY);
+  if (solid != nullptr)
   {
-    SPtr<MbSolid> cylinder = _CreateCylinder(*hole, holeDepth);
-    if (cylinder != nullptr)
+    // Creating holes in cube
+    for (auto && hole : paramPlan->GetHoles())
     {
-      MbSolid * tmpSolid = nullptr;
-      SPtr<MbSolid> cube = solid;
-      MbSNameMaker names(ct_BooleanSolid, MbSNameMaker::i_SideNone, 0);
-      ::BooleanSolid(*cube, cm_Copy, *cylinder, cm_Copy, bo_Difference, names, tmpSolid);
-      solid = tmpSolid;
+      SPtr<MbSolid> cylinder = _CreateCylinder(*hole);
+      if (cylinder != nullptr)
+      {
+        MbSolid * tmpSolid = nullptr;
+        SPtr<MbSolid> cube = solid;
+        MbSNameMaker names(ct_BooleanSolid, MbSNameMaker::i_SideNone, 0);
+        if(rt_Success == ::BooleanSolid(*cube, cm_Copy, *cylinder, cm_Copy, bo_Difference, names, tmpSolid))
+        {
+          solid = tmpSolid;
+        }
+      }
     }
   }
 
@@ -268,14 +273,14 @@ SPtr<MbSolid> AppParametricCube::_CreateSolidWithHoles(double height, double hol
 //
 // ---
 SPtr<MbSolid>
-    AppParametricCube::_CreateCube(const MbLineSegment & axisX, const MbLineSegment & axisY, double height) const
+    AppParametricCube::_CreateCube(const MbLineSegment & axisX, const MbLineSegment & axisY) const
 {
   SArray<MbCartPoint3D> cubePnts(4, 1);
   MbCartPoint3D p;
   p.Init(axisX.GetPoint1()); cubePnts.push_back(p);
   p.Init(axisX.GetPoint2()); cubePnts.push_back(p);
   p.Init(axisY.GetPoint1()); cubePnts.push_back(p);
-  p.Init(0., 0., height);   cubePnts.push_back(p);
+  p.Init(0., 0., cubeProps.height);    cubePnts.push_back(p);
   MbSolid * cube = nullptr;
   MbSNameMaker names(-1, MbSNameMaker::i_SideNone, 0);
   ::ElementarySolid(cubePnts, et_Block, names, cube);
@@ -285,12 +290,12 @@ SPtr<MbSolid>
 //----------------------------------------------------------------------------------------
 //
 // ---
-SPtr<MbSolid> AppParametricCube::_CreateCylinder(const MbArc & xyPlane, double height) const
+SPtr<MbSolid> AppParametricCube::_CreateCylinder(const MbArc & xyPlane) const
 {
   SArray<MbCartPoint3D> cylinderPnts(3, 1);
   auto center = xyPlane.GetCentre();
   cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, 0.));
-  cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, height));
+  cylinderPnts.push_back(MbCartPoint3D(center.x, center.y, holeProps.depth));
   cylinderPnts.push_back(MbCartPoint3D(center.x + xyPlane.GetRadius(), center.y, 0.));
   MbSolid * cylinder = nullptr;
   MbSNameMaker names(-1, MbSNameMaker::i_SideNone, 0);

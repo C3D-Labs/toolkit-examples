@@ -38,11 +38,13 @@ int main(int argc, char** argv)
     auto pWidthEd  = example.spinbox("Width", 100.0, 0.0, 500.0, 1.0);
 
     auto pHoleRadiusEd = example.spinbox("Holes radius", 15.0);
-    //auto pHoleIndentEd = example.spinbox("holeIndent", 5.0);
+    //auto pHoleIndentEd = example.spinbox("hole center indent", 5.0);
     auto pHoleDepthEd  = example.spinbox("Holes depth", 30.0, 0.0, 500.0, 1.0);
 
     const MbPlacement3D xyPlane;
-    auto paramCube = std::make_shared<AppParametricCube>(xyPlane, 100., 80., 150., 15., 5., 30.);
+    const ParamCubeProps cube{100., 80., 150.};
+    const ParamHoleProps hole{15., 30., 5.};
+    auto paramCube = std::make_shared<AppParametricCube>(xyPlane, cube, hole);
 
     SceneSegment * root = view->sceneContent()->GetRootSegment();
     SceneSegment * pMathSegment = nullptr;
@@ -64,10 +66,10 @@ int main(int argc, char** argv)
         paramCube->ChangeLengthZ(pHeightEd->value());
         paramCube->ChangeHoleRadius(pHoleRadiusEd->value());
 
-        if (paramCube->RebuildSolid(pHeightEd->value(), pHoleDepthEd->value()))
+        if (paramCube->RebuildSolid())
         {
             recreater(paramCube->SolidItem());
-            view->ZoomToFit();
+            //view->ZoomToFit();
             view->update();
         }
     });
