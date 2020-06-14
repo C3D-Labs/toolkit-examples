@@ -26,6 +26,7 @@ SOURCE_GROUP(\\Core FILES ${QtCore_SRC})
 
 SET(MOC_Files 
 	./Include/qt_openglwidget.h
+	./Include/qt_exampleview.h
   )
 QT5_WRAP_CPP(MOC_Gui ${MOC_Files})
 
