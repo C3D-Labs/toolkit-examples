@@ -10,73 +10,76 @@
 #include <mb_placement3d.h>
 
 
+std::shared_ptr<AppParametricCube> g_paramModel;
+SceneSegment * g_pMathSegment = nullptr;
 
+//----------------------------------------------------------------------------------------
+//
+// ---
+void buildVisualSegment(const MbItem * pItem, SceneSegment * parent)
+{
+    if (g_paramModel)
+    {
+        delete g_pMathSegment;
+        auto pRep = SceneGenerator::Instance()->CreateMathRep(pItem, MathGeometry::Synchronous);
+        g_pMathSegment = new SceneSegment(pRep, parent);
+    }
+}
+
+//----------------------------------------------------------------------------------------
+//
+// ---
+void LoadExampleScene(GraphicsScene * pGraphScene)
+{
+    const MbPlacement3D xyPlane;
+    g_paramModel = std::make_shared<AppParametricCube>(xyPlane, 100., 80., 150., 15., 5., 30.);
+
+    buildVisualSegment(g_paramModel->SolidItem(), pGraphScene->GetSceneContent()->GetRootSegment());
+
+    pGraphScene->GetViewport()->GetCamera()->SetViewOrientation(VSN_NAMESPACE::Rear);
+}
+
+
+//----------------------------------------------------------------------------------------
+//
 // ---
 int main(int argc, char** argv)
 {
     Application vapp;
     QApplication app(argc, argv);
-    app.setApplicationName("Parametric cube");
-    app.setOrganizationName("C3DLabs");
-
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(format);
+    InitQApplication(app);
 
     // prepare view
-    auto view = new QtVision::QtOpenGLSceneWidget();
-    view->viewport()->SetBackgroundColour(Color(74, 74, 74));
-    QtVision::CreateProcessesCameraControls(view->graphicsEngine()->GetTopEssence(), QtVision::pt_AllProcess);
+    QtExampleView * pView = new QtExampleView(Color(74, 74, 74));
 
-    ExampleWidget example("The parametric cube", view);
-    view->viewport()->GetCamera()->SetViewOrientation(VSN_NAMESPACE::Rear);
+    // build scene
+    QObject::connect(pView, &QtExampleView::loadExample, std::bind(&LoadExampleScene, std::placeholders::_1));
+
+    ExampleWidget example("The parametric cube", pView);
 
     auto pLenghtEd = example.spinbox("Length", 80, 0.0, 500.0, 1.0);
     auto pHeightEd = example.spinbox("Height", 150.0, 0.0, 500.0, 1.0);
     auto pWidthEd  = example.spinbox("Width", 100.0, 0.0, 500.0, 1.0);
 
     auto pHoleRadiusEd = example.spinbox("Holes radius", 15.0);
-    //auto pHoleIndentEd = example.spinbox("hole center indent", 5.0);
+    //auto pHoleIndentEd = example.spinbox("holeIndent", 5.0);
     auto pHoleDepthEd  = example.spinbox("Holes depth", 30.0, 0.0, 500.0, 1.0);
-
-    const MbPlacement3D xyPlane;
-    const ParamCubeProps cube{100., 80., 150.};
-    const ParamHoleProps hole{15., 30., 5.};
-    auto paramCube = std::make_shared<AppParametricCube>(xyPlane, cube, hole);
-
-    SceneSegment * root = view->sceneContent()->GetRootSegment();
-    SceneSegment * pMathSegment = nullptr;
-    
-    auto recreater = [root, &pMathSegment](const MbItem * pItem) {
-        delete pMathSegment;
-        auto pRep = SceneGenerator::Instance()->CreateMathRep(pItem, MathGeometry::Synchronous);
-        pMathSegment = new SceneSegment(pRep, root);
-    };
-    
-    recreater(paramCube->SolidItem());
-    view->ZoomToFit();
-
-    /// rebuild geometry
+  
+    /// rebuild geometry button
     QObject::connect(example.button("Recalculate"), &QPushButton::clicked, [&]()
     {
-        paramCube->ChangeLengthX(pLenghtEd->value());
-        paramCube->ChangeLengthY(pWidthEd->value());
-        paramCube->ChangeLengthZ(pHeightEd->value());
-        paramCube->ChangeHoleRadius(pHoleRadiusEd->value());
+        g_paramModel->ChangeLengthX(pWidthEd->value());
+        g_paramModel->ChangeLengthY(pLenghtEd->value());
+        g_paramModel->ChangeLengthZ(pHeightEd->value());
+        g_paramModel->ChangeHoleRadius(pHoleRadiusEd->value());
 
-        if (paramCube->RebuildSolid())
+        if (g_paramModel->RebuildSolid(pHeightEd->value(), pHoleDepthEd->value()))
         {
-            recreater(paramCube->SolidItem());
-            //view->ZoomToFit();
-            view->update();
+            buildVisualSegment(g_paramModel->SolidItem(), pView->sceneContent()->GetRootSegment());
+            pView->update();
         }
     });
 
-    example.move(QPoint(200, 200));
-    QRect geom = QApplication::desktop()->availableGeometry();
-    example.resize(2 * geom.width() / 3, 2 * geom.height() / 3);
     example.show();
 
     return app.exec();

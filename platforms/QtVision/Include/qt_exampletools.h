@@ -20,6 +20,7 @@
 
 #include "vsn_color.h"
 #include "qt_openglwidget.h"
+#include "qt_exampleview.h"
 
 class QtColorButton : public QPushButton
 {
@@ -69,11 +70,11 @@ private:
 class ExampleWidget : public QWidget
 {
 public:
-    ExampleWidget(QString name, QWidget * viewWidget)
+    ExampleWidget(QString name, QtExampleView * viewWidget)
     {
         QStackedLayout * pStackOfWidgets = new QStackedLayout(this);
 
-        if (auto license = licenseWidget(this))
+        if (auto license = licenseWidget(this, viewWidget))
             pStackOfWidgets->addWidget(license);
 
         QWidget * pRoot = new QWidget;
@@ -98,7 +99,9 @@ public:
         info->setIconSize(QSize(0, 0));
         m_rightPanel->addWidget(info);
 
-
+        move(QPoint(200, 200));
+        QRect geom = QApplication::desktop()->availableGeometry();
+        resize(2 * geom.width() / 3, 2 * geom.height() / 3);
     }
 
     QPushButton * button(const QString& label)
@@ -227,11 +230,14 @@ public:
     }
 
 private:
-    QWidget * licenseWidget(QWidget * owner)
+    QWidget * licenseWidget(QWidget * owner, QtExampleView * view)
     {
         std::string signature, key;
         if (loadkey(signature, key) && QtVision::ActivateLicense(signature, key))
+        {
+            view->activateKey();
             return nullptr;
+        }
 
         QWidget * pWidget = new QWidget(owner);
 
@@ -275,12 +281,13 @@ private:
         pKey->setText(C3D_LICENSE_KEY);
 #endif
 
-        QObject::connect(pActivate, &QPushButton::clicked, [this, pWidget, pSignature, pKey, pSaveKey]() {
+        QObject::connect(pActivate, &QPushButton::clicked, [this, pWidget, pSignature, pKey, pSaveKey, view]() {
             auto signature = pSignature->text().toStdString();
             auto key = pKey->text().toStdString();
 
             if (QtVision::ActivateLicense(signature, key))
             {
+                view->activateKey();
                 if (pSaveKey->isChecked())
                     savekey(signature, key);
                 pWidget->deleteLater();
