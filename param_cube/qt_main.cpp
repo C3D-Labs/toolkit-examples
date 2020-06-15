@@ -13,7 +13,7 @@ std::shared_ptr<AppParametricCube> g_paramModel;
 SceneSegment * g_pMathSegment = nullptr;
 
 constexpr ParamCubeProps cubeProps{90., 80., 70.};
-constexpr ParamHoleProps holeProps{15., 30., 5.};
+constexpr ParamHoleProps holeProps{15., 30., 20.};
 
 //----------------------------------------------------------------------------------------
 //

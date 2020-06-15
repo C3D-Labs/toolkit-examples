@@ -46,21 +46,20 @@ AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place,
   sketch->Parallel(*sideX, *lsegCD);
 
   // Create holes in each corner.
-  const double centerIndent = hole.radius + hole.centerIndent;
-  SPtr<MbArc> circle(new MbArc(MbCartPoint(centerIndent, centerIndent), hole.radius));
-  auto holeA = _AddHoleInCorner(*circle, *sideX, *sideY, centerIndent);
+  SPtr<MbArc> circle(new MbArc(MbCartPoint(hole.centerIndent, hole.centerIndent), hole.radius));
+  auto holeA = _AddHoleInCorner(*circle, *sideX, *sideY, hole.centerIndent);
   controls["holeR"] = sketch->Fix(*holeA, GCE_RADIUS_DIM);
 
-  circle = new MbArc(MbCartPoint(rect.length - centerIndent, centerIndent), hole.radius);
-  auto holeB = _AddHoleInCorner(*circle, *sideX, *lsegBC, centerIndent);
+  circle = new MbArc(MbCartPoint(rect.length - hole.centerIndent, hole.centerIndent), hole.radius);
+  auto holeB = _AddHoleInCorner(*circle, *sideX, *lsegBC, hole.centerIndent);
   sketch->Equality(*holeA, *holeB, GCE_EQUAL_RADIUS);
 
-  circle = new MbArc(MbCartPoint(rect.length - centerIndent, rect.width - centerIndent), hole.radius);
-  auto holeC = _AddHoleInCorner(*circle, *lsegBC, *lsegCD, centerIndent);
+  circle = new MbArc(MbCartPoint(rect.length - hole.centerIndent, rect.width - hole.centerIndent), hole.radius);
+  auto holeC = _AddHoleInCorner(*circle, *lsegBC, *lsegCD, hole.centerIndent);
   sketch->Equality(*holeA, *holeC, GCE_EQUAL_RADIUS);
 
-  circle = new MbArc(MbCartPoint(centerIndent, rect.width - centerIndent), hole.radius);
-  auto holeD = _AddHoleInCorner(*circle, *lsegCD, *sideY, centerIndent);
+  circle = new MbArc(MbCartPoint(hole.centerIndent, rect.width - hole.centerIndent), hole.radius);
+  auto holeD = _AddHoleInCorner(*circle, *lsegCD, *sideY, hole.centerIndent);
   sketch->Equality(*holeA, *holeD, GCE_EQUAL_RADIUS);
 }
 
