@@ -12,7 +12,7 @@
 std::shared_ptr<AppParametricCube> g_paramModel;
 SceneSegment * g_pMathSegment = nullptr;
 
-constexpr ParamCubeProps cubeProps{100., 80., 150.};
+constexpr ParamCubeProps cubeProps{90., 80., 70.};
 constexpr ParamHoleProps holeProps{15., 30., 5.};
 
 //----------------------------------------------------------------------------------------
@@ -60,9 +60,9 @@ int main(int argc, char** argv)
 
   ExampleWidget example("The parametric cube", pView);
 
-  auto pLenghtEd = example.spinbox("Block length", cubeProps.length, 0.0, 500.0, 1.0);
-  auto pHeightEd = example.spinbox("Block height", cubeProps.height, 0.0, 500.0, 1.0);
-  auto pWidthEd  = example.spinbox("Block width", cubeProps.width, 0.0, 500.0, 1.0);
+  auto pLenghtEd = example.spinbox("Block length", cubeProps.length, 0.0, 500.0, 5.0);
+  auto pHeightEd = example.spinbox("Block height", cubeProps.height, 0.0, 500.0, 5.0);
+  auto pWidthEd  = example.spinbox("Block width", cubeProps.width, 0.0, 500.0, 5.0);
 
   auto pHoleRadiusEd = example.spinbox("Holes radius", holeProps.radius);
   auto pHoleDepthEd  = example.spinbox("Holes depth", holeProps.depth, 0.0, 500.0, 1.0);
