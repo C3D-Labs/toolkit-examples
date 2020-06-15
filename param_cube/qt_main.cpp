@@ -12,6 +12,9 @@
 std::shared_ptr<AppParametricCube> g_paramModel;
 SceneSegment * g_pMathSegment = nullptr;
 
+constexpr ParamCubeProps cubeProps{100., 80., 150.};
+constexpr ParamHoleProps holeProps{15., 30., 5.};
+
 //----------------------------------------------------------------------------------------
 //
 // ---
@@ -31,8 +34,6 @@ void buildVisualSegment(const MbItem * pItem, SceneSegment * parent)
 void LoadExampleScene(GraphicsScene * pGraphScene)
 {
   const MbPlacement3D xyPlane;
-  ParamCubeProps cubeProps{100., 80., 150.};
-  ParamHoleProps holeProps{15., 30., 5.};
   g_paramModel = std::make_shared<AppParametricCube>(xyPlane, cubeProps, holeProps);
 
   buildVisualSegment(g_paramModel->SolidItem(), pGraphScene->GetSceneContent()->GetRootSegment());
@@ -59,19 +60,19 @@ int main(int argc, char** argv)
 
   ExampleWidget example("The parametric cube", pView);
 
-  auto pLenghtEd = example.spinbox("Block length", 80, 0.0, 500.0, 1.0);
-  auto pHeightEd = example.spinbox("Block height", 150.0, 0.0, 500.0, 1.0);
-  auto pWidthEd  = example.spinbox("Block width", 100.0, 0.0, 500.0, 1.0);
+  auto pLenghtEd = example.spinbox("Block length", cubeProps.length, 0.0, 500.0, 1.0);
+  auto pHeightEd = example.spinbox("Block height", cubeProps.height, 0.0, 500.0, 1.0);
+  auto pWidthEd  = example.spinbox("Block width", cubeProps.width, 0.0, 500.0, 1.0);
 
-  auto pHoleRadiusEd = example.spinbox("Holes radius", 15.0);
-  auto pHoleDepthEd  = example.spinbox("Holes depth", 30.0, 0.0, 500.0, 1.0);
+  auto pHoleRadiusEd = example.spinbox("Holes radius", holeProps.radius);
+  auto pHoleDepthEd  = example.spinbox("Holes depth", holeProps.depth, 0.0, 500.0, 1.0);
   //auto pHoleIndentEd = example.spinbox("holeIndent", 5.0);
 
   /// rebuild geometry button
   QObject::connect(example.button("Recalculate"), &QPushButton::clicked, [&]()
       {
-        g_paramModel->ChangeLengthX(pWidthEd->value());
-        g_paramModel->ChangeLengthY(pLenghtEd->value());
+        g_paramModel->ChangeLengthX(pLenghtEd->value());
+        g_paramModel->ChangeLengthY(pWidthEd->value());
         g_paramModel->ChangeLengthZ(pHeightEd->value());
         g_paramModel->ChangeHoleRadius(pHoleRadiusEd->value());
         g_paramModel->ChangeHoleDepth(pHoleDepthEd->value());
