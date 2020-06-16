@@ -27,7 +27,7 @@ AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place,
   sideX = _AddRectangleSide(vertA, vertB);  // lsegAB
   auto lsegBC = _AddRectangleSide(vertB, vertC);
   auto lsegCD = _AddRectangleSide(vertC, vertD);
-  sideY = _AddRectangleSide(vertD, vertA);  // sideY
+  sideY = _AddRectangleSide(vertD, vertA);  // lsegDA
 
   // Setting constraints on rectangle elements.
   const auto originPnt = sketch->GetControlPoint(*sideX, GCE_FIRST_END);
@@ -45,7 +45,7 @@ AppParametricCubePlan::AppParametricCubePlan(const MbPlacement3D & place,
   sketch->Perpendicular(*sideX, *lsegBC);
   sketch->Parallel(*sideX, *lsegCD);
 
-  // Create holes in each corner.
+  // Creating holes in each corner.
   SPtr<MbArc> circle(new MbArc(MbCartPoint(hole.centerIndent, hole.centerIndent), hole.radius));
   auto holeA = _AddHoleInCorner(*circle, *sideX, *sideY, hole.centerIndent);
   controls["holeR"] = sketch->Fix(*holeA, GCE_RADIUS_DIM);

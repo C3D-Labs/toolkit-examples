@@ -6,3 +6,4 @@
 /c3d-libs/vision/Include
 /c3d-libs/vision/Debug
 /.idea
+/cmake-build*/
