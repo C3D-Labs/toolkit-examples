@@ -1,14 +1,16 @@
 # Toolkit-examples
-This repository contains the examples show how to use components of the c3d kernel.
-Also, there are GUI wrappers to MFC and Qt libraries in the "platforms" directory.
+This repository contains examples that shows how to use components of the c3d kernel.
+Also there are wrappers over the MFC and Qt GUI libraries in the platform directory.
 
 ## Build:
-* Put the c3d libraries in the c3dlibs directory. (You may request the libraries at [https:://c3dlabs.com](https:://c3dlabs.com))  
-* Download and install Qt Gui, add environment variable to system Qt5_Dir. (if you want to use Qt gui)
+* Put the **C3D Toolkit** libraries in the ***toolkit-examples/c3d-libs*** directory. 
+  You may request **C3D Toolkit** libraries on [https://c3dlabs.com](https://c3dlabs.com)  
+* If you want to use **Qt GUI** library download and install it from [qt.io/download](https://www.qt.io/download) and 
+  define environment variable ***Qt5_Dir***.
 * Install CMake 3.14 version and higher.
-* Generate the build project use CMake and build.
+* Generate the project using CMake and build it.
 
 ## Examples list:  
 * param_cube/  
-The example shows how to make a parametric cube use C3D Solver component and display with C3D Vision componeny.  
-![alt text](param_cube/preview.png?raw=true "example preview")
+The example shows how to make a parametric cube using C3D Solver component and to visualize it using C3D Vision component.  
+![alt text](param_cube/screenshots/preview.png?raw=true "example preview")
