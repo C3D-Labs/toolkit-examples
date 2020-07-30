@@ -50,5 +50,7 @@ ENDIF()
 #------------------------------------
 IF (GUI_MFC_EXAMPLES)
   SET(MfcVision_OUTPUT "mfcvision")
+  SET(Examples_MFC_OUTPUT ${Qt_VIS_LIB}/MFC/)
+  SET(QtVision_DIR QtVision)
   ADD_SUBDIRECTORY(MfcVision)
 ENDIF()
