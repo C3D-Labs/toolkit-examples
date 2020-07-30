@@ -38,7 +38,6 @@ SET(MfcVision_INC
     ./include/mfc_exampletools.h
     ./include/mfc_licensewnd.h
     ./include/mfc_visiondef.h
-    ./include/lisencekey.h
 )
 SOURCE_GROUP(Include FILES ${MfcVision_INC})
 

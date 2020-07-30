@@ -24,6 +24,8 @@ public:
     {
         viewport()->SetBackgroundColour(background);
         QtVision::CreateProcessesCameraControls(graphicsEngine()->GetTopEssence(), QtVision::pt_AllProcess);
+
+        Object::Connect(viewport(), &Viewport::RefreshScreen, this, &QtOpenGLWidget::repaintWidget);
     }
 
 public:

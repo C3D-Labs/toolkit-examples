@@ -142,12 +142,13 @@ MACRO(MAKE_QT_EXAMPLE dir)
 		QT5_ADD_RESOURCES(RCC_example ${dir}/resources.qrc)
 	ENDIF()
     QT5_WRAP_CPP(MOC_example ${qt_headers})
-		
-	add_executable( ${dir} ${e_headers} ${e_sources} ${MOC_example} ${RCC_example} )
-	target_include_directories( ${dir} PRIVATE ${dir} ${C3D_Math_INCLUDE_DIR} ${C3D_Vision_INCLUDE_DIR} ${Qt_Vision_INCLUDE_DIR} )
-	target_link_libraries( ${dir} ${C3D_MATH_LIB} ${C3D_VIS_LIB} ${Qt_VIS_LIB} )
 	
-	qt5_use_modules( ${dir} Core Gui OpenGL Widgets )
+	SET(proj_name qt_${dir})	
+	add_executable( ${proj_name} ${e_headers} ${e_sources} ${MOC_example} ${RCC_example} )
+	target_include_directories( ${proj_name} PRIVATE ${dir} ${C3D_Math_INCLUDE_DIR} ${C3D_Vision_INCLUDE_DIR} ${Qt_Vision_INCLUDE_DIR} )
+	target_link_libraries( ${proj_name} ${C3D_MATH_LIB} ${C3D_VIS_LIB} ${Qt_VIS_LIB} )
+	
+	qt5_use_modules( ${proj_name} Core Gui OpenGL Widgets )
   ENDIF()
 ENDMACRO()
 
@@ -166,13 +167,14 @@ MACRO(MAKE_MFC_EXAMPLE dir)
 	
 	LIST(FILTER e_sources EXCLUDE REGEX "qt_")
 	
-	add_executable( ${dir} ${e_headers} ${e_sources} ${MFC_COMMON})
-	target_include_directories( ${dir} PRIVATE ${dir} ${C3D_Math_INCLUDE_DIR} ${C3D_Vision_INCLUDE_DIR} ${MFC_Vision_INCLUDE_DIR} ${MFC_COMMON_DIR} )
-	target_link_libraries( ${dir} ${C3D_MATH_LIB} ${C3D_VIS_LIB} ${MFC_VIS_LIB} )
+	SET(proj_name mfc_${dir})	
+	add_executable( ${proj_name} ${e_headers} ${e_sources} ${MFC_COMMON})
+	target_include_directories( ${proj_name} PRIVATE ${dir} ${C3D_Math_INCLUDE_DIR} ${C3D_Vision_INCLUDE_DIR} ${MFC_Vision_INCLUDE_DIR} ${MFC_COMMON_DIR} )
+	target_link_libraries( ${proj_name} ${C3D_MATH_LIB} ${C3D_VIS_LIB} ${MFC_VIS_LIB} )
 
-    SET_TARGET_PROPERTIES(${dir} PROPERTIES COMPILE_FLAGS -D_AFXDLL)
+    SET_TARGET_PROPERTIES(${proj_name} PROPERTIES COMPILE_FLAGS -D_AFXDLL)
     IF(EXAMPLES_UNICODE_MODE)
-	    SET_TARGET_PROPERTIES(${dir} PROPERTIES LINK_FLAGS /ENTRY:wWinMainCRTStartup)
+	    SET_TARGET_PROPERTIES(${proj_name} PROPERTIES LINK_FLAGS /ENTRY:wWinMainCRTStartup)
     ENDIF()	
   ENDIF()
 ENDMACRO()

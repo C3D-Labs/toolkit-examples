@@ -4,11 +4,10 @@
 #include <tool_enabler.h>
 #include <mfc_openglview.h>
 #include "mfc_exampletools.h"
-#include "nurbseditor.h"
+
 #include <functional>
 
-
-#include <last.h>
+#include "nurbseditor.h"
 
 VSN_USE_NAMESPACE
 
@@ -60,9 +59,6 @@ BOOL MfcExampleApp::InitInstance()
 {
     CWinApp::InitInstance();
     m_pAppl = new Application;
-
-    //if (!MfcVision::isExistLicense())
-    //    return 0;
 
     RenderingAreaFormat format;
     format.SetDepthBufferSize(24);
