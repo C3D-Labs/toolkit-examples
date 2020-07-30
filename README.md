@@ -14,3 +14,6 @@ Also there are wrappers over the MFC and Qt GUI libraries in the platform direct
 * param_cube/  
 The example shows how to make a parametric cube using C3D Solver component and to visualize it using C3D Vision component.  
 ![alt text](param_cube/screenshots/preview.png?raw=true "example preview")
+* vision_widgets/  
+The example shows how to make the handlers for change or move geometry of the scene using C3D Vision component.  
+![alt text](vision_widgets/screenshots/preview.png?raw=true "example preview")
